@@ -1,7 +1,8 @@
 package config
 
 import (
-	"flag"
+	flag "github.com/spf13/pflag"
+
 	"fmt"
 	"os"
 
@@ -9,12 +10,13 @@ import (
 )
 
 type Config struct {
-	Addr      string
-	Output    string
-	PingCount int
-	Timeout   int
-	ShowHelp  bool
-	Port      string
+	Addr            string
+	Output          string
+	PingCount       int
+	Timeout         int
+	ShowHelp        bool
+	Port            string
+	CustomDnsServer string
 }
 
 var usageStr = `Usage: dstp [OPTIONS] [ARGS]
@@ -24,6 +26,7 @@ Options:
 	-p           <int>     Number of ping packets                              [Default: 3]
 	-t           <int>     Give up on ping after this many seconds             [Default: 2s per ping packet]
 	--port       <string>  Port for testing TLS and HTTPS connectivity         [Default: 443]
+	--dns        <string>  Custom DNS server to use for DNS resolution         [No default]
 	-h, --help             Show this message and exit.
 `
 
@@ -52,6 +55,7 @@ func ConfigureOptions(fs *flag.FlagSet, args []string) (*Config, error) {
 	fs.StringVar(&opts.Port, "port", "", "Port for testing TLS and HTTPS connectivity")
 	fs.IntVar(&opts.PingCount, "p", 3, "Number of ping packets")
 	fs.IntVar(&opts.Timeout, "t", -1, "Give up on ping after this many seconds")
+	fs.StringVar(&opts.CustomDnsServer, "dns", "", "Custom DNS server to use for DNS resolution")
 	fs.BoolVar(&opts.ShowHelp, "h", false, "Show help message")
 	fs.BoolVar(&opts.ShowHelp, "help", false, "Show help message")
 

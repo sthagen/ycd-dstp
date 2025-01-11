@@ -20,13 +20,14 @@ Options:
         -p           <int>     Number of ping packets                              [Default: 3]
         -t           <int>     Give up on ping after this many seconds             [Default: 2s per ping packet]
         --port       <string>  Port for testing TLS and HTTPS connectivity         [Default: 443]
+        --dns        <string>  Custom DNS server to use for DNS resolution         [No default]
         -h, --help             Show this message and exit.
 ```
 
 ## Motivation
 
 A comment on [lobste.rs](https://lobste.rs/s/qtsklv/how_do_you_tell_if_problem_is_caused_by_dns#c_1nqkdp), in a thread
-about DNS gave a great idea and thought a robust tool like that come in handy!
+about DNS gave a great idea and thought a robust tool like that might come in handy!
 
 ## Installation
 
@@ -46,20 +47,29 @@ brew install ycd/tap/dstp
 go install github.com/ycd/dstp/cmd/dstp@latest
 ```
 
-#### NixOS
+#### NixOS/nix
 
-1. Add `dstp`to `/etc/nixos/configuration.nix`:
+You can install dstp using one of these methods:
 
+1. Using `nix-shell` or `nix shell` (recommended for trying it out):
+```bash
+nix shell nixpkgs#dstp
 ```
-environment.systemPackages = with pkgs; [
-  dstp
-];
+
+2. Adding to your NixOS configuration (system-wide installation):
+```nix
+# configuration.nix or home-manager configuration
+{
+  # ...
+  environment.systemPackages = with pkgs; [
+    dstp
+  ];
+}
 ```
 
-2. Run:
-
-```zsh
-sudo nixos-rebuild switch
+3. Or using `nix profile` (for individual user installation):
+```bash
+nix profile install nixpkgs#dstp
 ```
 
 #### Arch Linux
@@ -77,13 +87,14 @@ for 64-bit Windows, macOS, and Linux targets. They contain the compiled executab
 
 | platform     |
 | ----------- | 
-| [macOS ARM 64 Bit](https://github.com/ycd/dstp/releases/download/v0.4.0/dstp_0.4.0_darwin_arm64.tar.gz)
-| [macOS 64 Bit](https://github.com/ycd/dstp/releases/download/v0.4.0/dstp_0.4.0_darwin_x86_64.tar.gz)
-| [Linux 32-Bit](https://github.com/ycd/dstp/releases/download/v0.4.0/dstp_0.4.0_linux_i386.tar.gz)
-| [Linux ARM 64 Bit](https://github.com/ycd/dstp/releases/download/v0.4.0/dstp_0.4.0_linux_arm64.tar.gz)
-| [Linux 64 Bit](https://github.com/ycd/dstp/releases/download/v0.4.0/dstp_0.4.0_linux_x86_64.tar.gz)
-| [Windows 64 Bit](https://github.com/ycd/dstp/releases/download/v0.4.0/dstp_0.4.0_windows_x86_64.zip)
-| [Windows 32 Bit](https://github.com/ycd/dstp/releases/download/v0.4.0/dstp_0.4.0_windows_i386.zip)
+| [macOS ARM 64 Bit](https://github.com/ycd/dstp/releases/download/v0.4.23/dstp_0.4.23_Darwin_arm64.tar.gz)
+| [macOS 64 Bit](https://github.com/ycd/dstp/releases/download/v0.4.23/dstp_0.4.23_Darwin_amd64.tar.gz)
+| [Linux 32-Bit](https://github.com/ycd/dstp/releases/download/v0.4.23/dstp_0.4.23_Linux_386.tar.gz)
+| [Linux ARM 64 Bit](https://github.com/ycd/dstp/releases/download/v0.4.23/dstp_0.4.23_Linux_arm64.tar.gz)
+| [Linux 64 Bit](https://github.com/ycd/dstp/releases/download/v0.4.23/dstp_0.4.23_Linux_amd64.tar.gz)
+| [Windows 64 Bit](https://github.com/ycd/dstp/releases/download/v0.4.23/dstp_0.4.23_Windows_amd64.zip)
+| [Windows 32 Bit](https://github.com/ycd/dstp/releases/download/v0.4.23/dstp_0.4.23_Windows_386.zip)
+| [Windows ARM 64 Bit](https://github.com/ycd/dstp/releases/download/v0.4.23/dstp_0.4.23_Windows_arm64.zip)
 
 ### Installation from source
 
@@ -108,7 +119,7 @@ for 64-bit Windows, macOS, and Linux targets. They contain the compiled executab
    #### Unix/Linux
    ```
    # May require you to use sudo
-   $ go build cmd/dstp/main.go
+   $ go build cmd/dstp/dstp.go
    $ cp dstp /usr/local/bin/dstp
    ```
 
@@ -135,6 +146,16 @@ for 64-bit Windows, macOS, and Linux targets. They contain the compiled executab
    ```
 
 ---
+
+## Appendix
+
+The command `dstp` may collide with `docker stop`command if you are using the docker plugin with oh-my-zsh. 
+
+To fix this, you can add the following command at the end of your `.zshrc` file:
+
+```zsh
+unalias dstp
+```
 
 ## Contributing
 
